@@ -35,6 +35,8 @@ export interface AtributosDinamicos {
   [key: string]: boolean | string | number | undefined;
 }
 
+import type { Multimedia } from './multimedia.types';
+
 export interface Anuncio {
   id: string;
   arrendador_id: string;
@@ -51,6 +53,7 @@ export interface Anuncio {
   estado: EstadoAnuncio;
   fecha_creacion: string;
   ultima_actualizacion: string;
+  multimedia?: Multimedia[];
   arrendador?: {
     id: string;
     nombre: string;

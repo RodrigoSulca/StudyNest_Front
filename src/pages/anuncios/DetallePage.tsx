@@ -1,16 +1,20 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { Rol } from '../../types/usuario.types';
 import type { Anuncio } from '../../types/anuncio.types';
 import { EstadoAnuncio } from '../../types/anuncio.types';
+import type { Multimedia } from '../../types/multimedia.types';
 import type { PromedioResponse } from '../../types/resena.types';
 import { getAnuncio, changeEstado, deleteAnuncio } from '../../services/anuncios.service';
 import { getPromedio } from '../../services/resenas.service';
+import { getMultimediaByAnuncio } from '../../services/multimedia.service';
 import { Button } from '../../components/ui/Button';
 import { Alert } from '../../components/ui/Alert';
 import { LoadingSpinner } from '../../components/ui/LoadingSpinner';
 import { ListaResenas } from '../../components/resenas/ListaResenas';
+import { GaleriaMultimedia } from '../../components/multimedia/GaleriaMultimedia';
+import { UploadMultimedia } from '../../components/multimedia/UploadMultimedia';
 
 const estadoStyles: Record<string, string> = {
   [EstadoAnuncio.BORRADOR]: 'bg-gray-100 text-gray-700',
@@ -40,6 +44,7 @@ export default function DetallePage() {
   const [actionLoading, setActionLoading] = useState(false);
   const [success, setSuccess] = useState('');
   const [promedioData, setPromedioData] = useState<PromedioResponse | null>(null);
+  const [imagenes, setImagenes] = useState<Multimedia[]>([]);
 
   const isOwner = user && anuncio && user.id === anuncio.arrendador_id;
   const isAdmin = user?.rol === Rol.ADMIN;
@@ -72,6 +77,17 @@ export default function DetallePage() {
       .then(setPromedioData)
       .catch(() => {});
   }, [id]);
+
+  const fetchMultimedia = useCallback(() => {
+    if (!id) return;
+    getMultimediaByAnuncio(id)
+      .then(setImagenes)
+      .catch(() => {});
+  }, [id]);
+
+  useEffect(() => {
+    fetchMultimedia();
+  }, [fetchMultimedia]);
 
   const handleToggleState = async () => {
     if (!anuncio) return;
@@ -140,6 +156,25 @@ export default function DetallePage() {
       {error && (
         <div className="mb-4">
           <Alert type="error" message={error} onClose={() => setError('')} />
+        </div>
+      )}
+
+      <div className="mb-6">
+        <GaleriaMultimedia
+          imagenes={imagenes}
+          showAdminControls={isAdmin}
+          onEstadoChange={fetchMultimedia}
+          onDelete={
+            isOwner
+              ? (deletedId) => setImagenes((prev) => prev.filter((img) => img.id !== deletedId))
+              : undefined
+          }
+        />
+      </div>
+
+      {isOwner && id && (
+        <div className="mb-6 rounded-lg bg-white p-6 shadow-sm">
+          <UploadMultimedia anuncioId={id} onUploadComplete={fetchMultimedia} />
         </div>
       )}
 
