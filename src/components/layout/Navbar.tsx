@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { Rol } from '../../types/usuario.types';
 import { useState } from 'react';
+import { NotificationBell } from '../notifications/NotificationBell';
 
 export function Navbar() {
   const { user, isAuthenticated } = useAuth();
@@ -39,6 +40,7 @@ export function Navbar() {
                   </Link>
                 </>
               )}
+              <NotificationBell />
               <span className="text-sm text-gray-600">
                 {user?.nombre}
               </span>
@@ -120,7 +122,10 @@ export function Navbar() {
                   </Link>
                 </>
               )}
-              <span className="text-sm font-medium text-gray-900">{user?.nombre}</span>
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-gray-900">{user?.nombre}</span>
+                <NotificationBell />
+              </div>
               <span className="inline-block w-fit rounded-full bg-indigo-100 px-2.5 py-0.5 text-xs font-medium text-indigo-700 capitalize">
                 {user?.rol === Rol.ARRENDADOR ? 'Landlord' : user?.rol === Rol.ADMIN ? 'Admin' : 'Student'}
               </span>
