@@ -12,6 +12,7 @@ import DetallePage from '../pages/anuncios/DetallePage';
 import PublicarPage from '../pages/anuncios/PublicarPage';
 import MisAnunciosPage from '../pages/anuncios/MisAnunciosPage';
 import EditarAnuncioPage from '../pages/anuncios/EditarAnuncioPage';
+import PublicarResenaPage from '../pages/anuncios/PublicarResenaPage';
 import NotFound from '../pages/NotFound';
 
 export default function AppRouter() {
@@ -35,6 +36,9 @@ export default function AppRouter() {
           <Route path="/anuncios/publicar" element={<PublicarPage />} />
           <Route path="/anuncios/mis-anuncios" element={<MisAnunciosPage />} />
           <Route path="/anuncios/:id/editar" element={<EditarAnuncioPage />} />
+
+          {/* Protected resenas routes */}
+          <Route path="/anuncios/:id/resena" element={<PublicarResenaPage />} />
         </Route>
 
         <Route path="/404" element={<NotFound />} />

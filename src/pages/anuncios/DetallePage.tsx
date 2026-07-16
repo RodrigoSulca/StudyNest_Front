@@ -4,10 +4,13 @@ import { useAuth } from '../../hooks/useAuth';
 import { Rol } from '../../types/usuario.types';
 import type { Anuncio } from '../../types/anuncio.types';
 import { EstadoAnuncio } from '../../types/anuncio.types';
+import type { PromedioResponse } from '../../types/resena.types';
 import { getAnuncio, changeEstado, deleteAnuncio } from '../../services/anuncios.service';
+import { getPromedio } from '../../services/resenas.service';
 import { Button } from '../../components/ui/Button';
 import { Alert } from '../../components/ui/Alert';
 import { LoadingSpinner } from '../../components/ui/LoadingSpinner';
+import { ListaResenas } from '../../components/resenas/ListaResenas';
 
 const estadoStyles: Record<string, string> = {
   [EstadoAnuncio.BORRADOR]: 'bg-gray-100 text-gray-700',
@@ -36,6 +39,7 @@ export default function DetallePage() {
   const [error, setError] = useState('');
   const [actionLoading, setActionLoading] = useState(false);
   const [success, setSuccess] = useState('');
+  const [promedioData, setPromedioData] = useState<PromedioResponse | null>(null);
 
   const isOwner = user && anuncio && user.id === anuncio.arrendador_id;
   const isAdmin = user?.rol === Rol.ADMIN;
@@ -60,6 +64,13 @@ export default function DetallePage() {
     };
 
     fetchAnuncio();
+  }, [id]);
+
+  useEffect(() => {
+    if (!id) return;
+    getPromedio(id)
+      .then(setPromedioData)
+      .catch(() => {});
   }, [id]);
 
   const handleToggleState = async () => {
@@ -232,6 +243,14 @@ export default function DetallePage() {
           </div>
         )}
       </div>
+
+      {id && promedioData && (
+        <ListaResenas
+          alojamientoId={id}
+          promedio={promedioData.promedio}
+          totalResenas={promedioData.total_resenas}
+        />
+      )}
     </div>
   );
 }

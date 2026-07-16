@@ -1,7 +1,7 @@
 export const Rol = {
   ESTUDIANTE: 'estudiante',
   ARRENDADOR: 'arrendador',
-  ADMIN: 'admin',
+  ADMIN: 'administrador',
 } as const;
 
 export type Rol = (typeof Rol)[keyof typeof Rol];
