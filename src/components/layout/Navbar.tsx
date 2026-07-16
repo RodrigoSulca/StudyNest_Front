@@ -15,8 +15,30 @@ export function Navbar() {
         </Link>
 
         <div className="hidden items-center gap-4 md:flex">
+          <Link
+            to="/anuncios"
+            className="text-sm font-medium text-gray-600 hover:text-gray-900"
+          >
+            Search
+          </Link>
           {isAuthenticated ? (
             <>
+              {user?.rol === Rol.ARRENDADOR && (
+                <>
+                  <Link
+                    to="/anuncios/publicar"
+                    className="text-sm font-medium text-gray-600 hover:text-gray-900"
+                  >
+                    Publish
+                  </Link>
+                  <Link
+                    to="/anuncios/mis-anuncios"
+                    className="text-sm font-medium text-gray-600 hover:text-gray-900"
+                  >
+                    My Listings
+                  </Link>
+                </>
+              )}
               <span className="text-sm text-gray-600">
                 {user?.nombre}
               </span>
@@ -73,6 +95,31 @@ export function Navbar() {
         <div className="border-t border-gray-200 px-4 py-3 md:hidden">
           {isAuthenticated ? (
             <div className="flex flex-col gap-3">
+              <Link
+                to="/anuncios"
+                className="text-sm font-medium text-gray-600 hover:text-gray-900"
+                onClick={() => setMenuOpen(false)}
+              >
+                Search
+              </Link>
+              {user?.rol === Rol.ARRENDADOR && (
+                <>
+                  <Link
+                    to="/anuncios/publicar"
+                    className="text-sm font-medium text-gray-600 hover:text-gray-900"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Publish
+                  </Link>
+                  <Link
+                    to="/anuncios/mis-anuncios"
+                    className="text-sm font-medium text-gray-600 hover:text-gray-900"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    My Listings
+                  </Link>
+                </>
+              )}
               <span className="text-sm font-medium text-gray-900">{user?.nombre}</span>
               <span className="inline-block w-fit rounded-full bg-indigo-100 px-2.5 py-0.5 text-xs font-medium text-indigo-700 capitalize">
                 {user?.rol === Rol.ARRENDADOR ? 'Landlord' : user?.rol === Rol.ADMIN ? 'Admin' : 'Student'}
@@ -94,6 +141,13 @@ export function Navbar() {
             </div>
           ) : (
             <div className="flex flex-col gap-3">
+              <Link
+                to="/anuncios"
+                className="text-sm font-medium text-gray-600 hover:text-gray-900"
+                onClick={() => setMenuOpen(false)}
+              >
+                Search
+              </Link>
               <Link
                 to="/login"
                 className="text-sm text-gray-600 hover:text-gray-900"
