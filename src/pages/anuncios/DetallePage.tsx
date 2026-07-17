@@ -15,6 +15,7 @@ import { LoadingSpinner } from '../../components/ui/LoadingSpinner';
 import { ListaResenas } from '../../components/resenas/ListaResenas';
 import { GaleriaMultimedia } from '../../components/multimedia/GaleriaMultimedia';
 import { UploadMultimedia } from '../../components/multimedia/UploadMultimedia';
+import { SugerenciasAnuncio } from '../../components/ia/SugerenciasAnuncio';
 
 const estadoStyles: Record<string, string> = {
   [EstadoAnuncio.BORRADOR]: 'bg-gray-100 text-gray-700',
@@ -285,6 +286,12 @@ export default function DetallePage() {
           promedio={promedioData.promedio}
           totalResenas={promedioData.total_resenas}
         />
+      )}
+
+      {isOwner && id && (
+        <div className="mt-6">
+          <SugerenciasAnuncio anuncioId={id} />
+        </div>
       )}
     </div>
   );

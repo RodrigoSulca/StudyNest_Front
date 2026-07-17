@@ -24,6 +24,18 @@ export function Navbar() {
           </Link>
           {isAuthenticated ? (
             <>
+              <Link
+                to="/ia/busqueda"
+                className="text-sm font-medium text-gray-600 hover:text-gray-900"
+              >
+                AI Search
+              </Link>
+              <Link
+                to="/ia/recomendaciones"
+                className="text-sm font-medium text-gray-600 hover:text-gray-900"
+              >
+                Recommendations
+              </Link>
               {user?.rol === Rol.ARRENDADOR && (
                 <>
                   <Link
@@ -37,6 +49,12 @@ export function Navbar() {
                     className="text-sm font-medium text-gray-600 hover:text-gray-900"
                   >
                     My Listings
+                  </Link>
+                  <Link
+                    to="/ia/contratos"
+                    className="text-sm font-medium text-gray-600 hover:text-gray-900"
+                  >
+                    Contracts
                   </Link>
                 </>
               )}
@@ -104,6 +122,20 @@ export function Navbar() {
               >
                 Search
               </Link>
+              <Link
+                to="/ia/busqueda"
+                className="text-sm font-medium text-gray-600 hover:text-gray-900"
+                onClick={() => setMenuOpen(false)}
+              >
+                AI Search
+              </Link>
+              <Link
+                to="/ia/recomendaciones"
+                className="text-sm font-medium text-gray-600 hover:text-gray-900"
+                onClick={() => setMenuOpen(false)}
+              >
+                Recommendations
+              </Link>
               {user?.rol === Rol.ARRENDADOR && (
                 <>
                   <Link
@@ -119,6 +151,13 @@ export function Navbar() {
                     onClick={() => setMenuOpen(false)}
                   >
                     My Listings
+                  </Link>
+                  <Link
+                    to="/ia/contratos"
+                    className="text-sm font-medium text-gray-600 hover:text-gray-900"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Contracts
                   </Link>
                 </>
               )}
