@@ -5,6 +5,7 @@ import { Rol } from '../../types/usuario.types';
 import type { Anuncio } from '../../types/anuncio.types';
 import { EstadoAnuncio } from '../../types/anuncio.types';
 import type { Multimedia } from '../../types/multimedia.types';
+import { EstadoMultimedia } from '../../types/multimedia.types';
 import type { PromedioResponse } from '../../types/resena.types';
 import { getAnuncio, changeEstado, deleteAnuncio } from '../../services/anuncios.service';
 import { getPromedio } from '../../services/resenas.service';
@@ -160,10 +161,18 @@ export default function DetallePage() {
         </div>
       )}
 
+      {isOwner && imagenes.some((img) => img.estado === EstadoMultimedia.RECHAZADA) && (
+        <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+          Algunas de tus imágenes fueron <strong>rechazadas por la validación con IA</strong> por no
+          corresponder a un alojamiento. No son visibles para los estudiantes &mdash; elimínalas y sube otras.
+        </div>
+      )}
+
       <div className="mb-6">
         <GaleriaMultimedia
           imagenes={imagenes}
           showAdminControls={isAdmin}
+          mostrarEstado={Boolean(isOwner) || isAdmin}
           onEstadoChange={fetchMultimedia}
           onDelete={
             isOwner

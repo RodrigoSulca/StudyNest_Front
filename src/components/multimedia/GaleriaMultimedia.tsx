@@ -8,6 +8,9 @@ interface GaleriaMultimediaProps {
   imagenes: Multimedia[];
   onDelete?: (id: string) => void;
   showAdminControls?: boolean;
+  // Muestra el badge de estado (PENDIENTE/APROBADA/RECHAZADA) sin dar controles de admin.
+  // Útil para que el dueño vea cuáles de sus imágenes fueron rechazadas.
+  mostrarEstado?: boolean;
   onEstadoChange?: () => void;
 }
 
@@ -21,10 +24,14 @@ export function GaleriaMultimedia({
   imagenes,
   onDelete,
   showAdminControls = false,
+  mostrarEstado = false,
   onEstadoChange,
 }: GaleriaMultimediaProps) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+
+  // El badge de estado se ve para admins (que además moderan) y para el dueño.
+  const verEstado = showAdminControls || mostrarEstado;
 
   if (imagenes.length === 0) {
     return (
@@ -98,7 +105,7 @@ export function GaleriaMultimedia({
                 </div>
               </button>
 
-              {showAdminControls && (
+              {verEstado && (
                 <div className="absolute top-2 left-2">
                   <span
                     className={`rounded-full px-2 py-0.5 text-xs font-medium ${statusBadge[img.estado]}`}
