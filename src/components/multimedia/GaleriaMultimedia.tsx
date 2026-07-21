@@ -78,7 +78,9 @@ export function GaleriaMultimedia({
         {imagenes
           .slice()
           .sort((a, b) => a.orden - b.orden)
-          .map((img, index) => (
+          .map((img, index) => {
+            const validacion = img.registros_validacion?.[0];
+            return (
             <div
               key={img.id}
               className="group relative overflow-hidden rounded-lg shadow-sm transition-transform hover:scale-[1.02]"
@@ -100,8 +102,10 @@ export function GaleriaMultimedia({
                 <div className="absolute top-2 left-2">
                   <span
                     className={`rounded-full px-2 py-0.5 text-xs font-medium ${statusBadge[img.estado]}`}
+                    title={validacion ? `IA: ${validacion.etiqueta_detectada} · ${Number(validacion.score_confianza).toFixed(1)}%` : undefined}
                   >
                     {img.estado}
+                    {validacion ? ` · ${Number(validacion.score_confianza).toFixed(0)}%` : ''}
                   </span>
                 </div>
               )}
@@ -147,7 +151,8 @@ export function GaleriaMultimedia({
                 </div>
               )}
             </div>
-          ))}
+            );
+          })}
       </div>
 
       {lightboxIndex !== null && (

@@ -1,5 +1,7 @@
 import { useState, useRef, useCallback } from 'react';
 import { uploadMultimedia } from '../../services/multimedia.service';
+import { EstadoMultimedia } from '../../types/multimedia.types';
+import type { EstadoMultimedia as EstadoMultimediaType } from '../../types/multimedia.types';
 import { Button } from '../ui/Button';
 import { Alert } from '../ui/Alert';
 
@@ -17,7 +19,14 @@ interface PendingFile {
   status: 'pending' | 'uploading' | 'success' | 'error';
   progress: number;
   error?: string;
+  veredicto?: EstadoMultimediaType;
 }
+
+const VEREDICTO_IA: Record<EstadoMultimediaType, { texto: string; clase: string }> = {
+  [EstadoMultimedia.APROBADA]: { texto: 'Aprobada por IA', clase: 'text-green-600' },
+  [EstadoMultimedia.RECHAZADA]: { texto: 'Rechazada por IA', clase: 'text-red-600' },
+  [EstadoMultimedia.PENDIENTE]: { texto: 'En revisión manual', clase: 'text-yellow-600' },
+};
 
 function formatBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
@@ -69,20 +78,28 @@ export function UploadMultimedia({ anuncioId, onUploadComplete }: UploadMultimed
     setGeneralError('');
 
     try {
-      await uploadMultimedia(anuncioId, files.map((f) => f.file), (percent) => {
+      const resultados = await uploadMultimedia(anuncioId, files.map((f) => f.file), (percent) => {
         setFiles((prev) =>
           prev.map((f) => (f.status === 'uploading' ? { ...f, progress: percent } : f)),
         );
       });
 
-      setFiles((prev) => prev.map((f) => ({ ...f, status: 'success' as const, progress: 100 })));
+      // El backend responde con el estado ya resuelto por la validación de IA (síncrono).
+      setFiles((prev) =>
+        prev.map((f, i) => ({
+          ...f,
+          status: 'success' as const,
+          progress: 100,
+          veredicto: resultados[i]?.estado,
+        })),
+      );
       onUploadComplete();
       setTimeout(() => {
         setFiles((prev) => {
           prev.forEach((f) => URL.revokeObjectURL(f.preview));
           return [];
         });
-      }, 2000);
+      }, 4000);
     } catch {
       setGeneralError('Upload failed. Please try again.');
       setFiles((prev) => prev.map((f) => ({ ...f, status: 'error' as const })));
@@ -195,11 +212,11 @@ export function UploadMultimedia({ anuncioId, onUploadComplete }: UploadMultimed
                 )}
 
                 {f.status === 'success' && (
-                  <div className="mt-1 flex items-center gap-1 text-xs text-green-600">
+                  <div className={`mt-1 flex items-center gap-1 text-xs ${f.veredicto ? VEREDICTO_IA[f.veredicto].clase : 'text-green-600'}`}>
                     <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                     </svg>
-                    Uploaded
+                    {f.veredicto ? VEREDICTO_IA[f.veredicto].texto : 'Uploaded'}
                   </div>
                 )}
 
